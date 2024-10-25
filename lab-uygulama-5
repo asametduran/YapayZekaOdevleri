@@ -1,0 +1,47 @@
+#1-
+"""
+import pandas as pd
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+veri = pd.read_csv("Mall_Customers.csv")
+X = veri[['Age', 'Annual Income (k$)']]
+kmeans = KMeans(n_clusters=3, max_iter=300, random_state=42)
+veri['kümeler'] = kmeans.fit_predict(X)
+plt.scatter(X['Age'], X['Annual Income (k$)'], c=veri['kümeler'], cmap='viridis')
+plt.xlabel("Yaş")
+plt.ylabel("Yıllık Gelir (k$)")
+plt.title("Müşteri Segmentasyonu")
+plt.colorbar(label='Küme No')
+plt.show()
+print(veri[veri["kümeler"] == 0].head(5))
+print(veri[veri["kümeler"] == 1].head(5))
+print(veri[veri["kümeler"] == 2].head(5))
+
+
+"""
+#2-)
+import pandas as pd
+import simpsom as sps
+import numpy as np
+from sklearn.cluster import KMeans
+
+veri = pd.read_csv("CC GENERAL.csv")
+veri = veri.dropna()
+X = veri[['BALANCE', 'PURCHASES', 'CASH_ADVANCE', 'CREDIT_LIMIT']]
+
+net = sps.SOMNet(20, 20, X.values, PBC=True)
+
+# bu satir string hatası oluşturulduğundan dolayı chatgpt tarafindan eklenmistir.
+net.train(train_algo='batch')
+
+hrt = np.array(net.project(X.values))
+kmeans = KMeans(n_clusters=3, max_iter=300, random_state=42)
+y_kmeans = kmeans.fit_predict(hrt)
+
+veri["kümeler"] = kmeans.labels_
+print(veri[veri["kümeler"] == 0].head(5))
+print(veri[veri["kümeler"] == 1].head(5))
+print(veri[veri["kümeler"] == 2].head(5))
+
+
